@@ -10,6 +10,14 @@ module.exports = function (app) {
         next();
     });
 
+    app.post(
+        "/api/emotion",
+        [
+            
+        ],
+        controller.addLog
+    )
+
     app.get(
         "/api/emotion/summary",
         [

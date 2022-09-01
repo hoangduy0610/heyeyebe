@@ -2,6 +2,33 @@ const db = require("../models");
 const dateUtils = require("../utils/date.util");
 const Emotion = db.emotion;
 
+exports.addLog = (req, res, next) => {
+    let obj = req.body;
+    const allowFields = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise'];
+    Object.keys(obj).forEach((k) => (!allowFields.includes(k)) && delete obj[k]);
+    var maxEmo = obj.anger;
+    var nameMaxEmo = "anger";
+    for (const [key, value] of Object.entries(obj)) {
+        if (value > maxEmo) {
+            nameMaxEmo = key;
+            maxEmo = value;
+        }
+    }
+    const emotion = new Emotion({
+        ...obj,
+        maxKey: nameMaxEmo,
+        date: Math.round(Date.now() / 1000),
+    });
+    emotion.save((err, emo) => {
+        if (err) {
+            res.status(500).send({ message: err.message });
+            return;
+        }
+
+        res.send({ message: "Successfully" });
+    });
+}
+
 exports.summary = (req, res, next) => {
     var now = new Date();
     var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
