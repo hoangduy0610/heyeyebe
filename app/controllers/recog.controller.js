@@ -13,12 +13,16 @@ exports.recog = async (req, res, next) => {
     if (!content.length) res.status(400).send({ message: "No data pretrained" })
     for (var x = 0; x < Object.keys(content).length; x++) {
         for (var y = 0; y < Object.keys(content[x].descriptors).length; y++) {
-            var resultsz = Object.values(content[x].descriptors[y]);
-            content[x].descriptors[y] = new Float32Array(resultsz);
+            if (content[x].descriptors[y].length) {
+                var resultsz = Object.values(content[x].descriptors[y]);
+                content[x].descriptors[y] = new Float32Array(resultsz);
+            } else {
+                content[x].descriptors[y] = null;
+            }
         }
     }
     const faceMatcher = await createFaceMatcher(content);
-    const img = await canvas.loadImage('temp/test_images/3.jpg')
+    const img = await canvas.loadImage('temp/test_images/19300059.jpg')
     const results = await faceapi.detectAllFaces(img, faceDetectionOptions)
         .withFaceLandmarks()
         .withFaceExpressions()
@@ -115,7 +119,7 @@ async function createFaceMatcher(data) {
     const labeledFaceDescriptors = await Promise.all(data.map(className => {
         const descriptors = [];
         for (var i = 0; i < className.descriptors.length; i++) {
-            descriptors.push(className.descriptors[i]);
+            if (className.descriptors[i]) descriptors.push(className.descriptors[i]);
         }
         return new faceapi.LabeledFaceDescriptors(className.label, descriptors);
     }))
