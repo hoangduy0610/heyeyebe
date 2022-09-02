@@ -4,10 +4,10 @@ const Emotion = db.emotion;
 
 exports.addLog = (req, res, next) => {
     let obj = req.body;
-    const allowFields = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise'];
+    const allowFields = ['angry', 'disgusted', 'fearful', 'happy', 'neutral', 'sad', 'surprised'];
     Object.keys(obj).forEach((k) => (!allowFields.includes(k)) && delete obj[k]);
-    var maxEmo = obj.anger;
-    var nameMaxEmo = "anger";
+    var maxEmo = obj.angry;
+    var nameMaxEmo = "angry";
     for (const [key, value] of Object.entries(obj)) {
         if (value > maxEmo) {
             nameMaxEmo = key;
@@ -42,14 +42,13 @@ exports.summary = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -60,8 +59,8 @@ exports.summary = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -97,14 +96,13 @@ exports.morning = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -115,8 +113,8 @@ exports.morning = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -151,14 +149,13 @@ exports.afternoon = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -169,8 +166,8 @@ exports.afternoon = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -206,14 +203,13 @@ exports.week = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -224,8 +220,8 @@ exports.week = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -260,14 +256,13 @@ exports.month = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -278,8 +273,8 @@ exports.month = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -314,14 +309,13 @@ exports.last30days = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -332,8 +326,8 @@ exports.last30days = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
@@ -368,14 +362,13 @@ exports.year = (req, res, next) => {
                 return;
             }
             const ret = {
-                anger: 0,
-                contempt: 0,
-                disgust: 0,
-                fear: 0,
-                happiness: 0,
+                angry: 0,
+                disgusted: 0,
+                fearful: 0,
+                happy: 0,
                 neutral: 0,
-                sadness: 0,
-                surprise: 0,
+                sad: 0,
+                surprised: 0,
             };
             var numDoc = 0;
             emotions.forEach((emotion) => {
@@ -386,8 +379,8 @@ exports.year = (req, res, next) => {
                 }
                 numDoc++;
             });
-            var maxEmo = ret.anger;
-            var nameMaxEmo = "anger";
+            var maxEmo = ret.angry;
+            var nameMaxEmo = "angry";
             for (const [key, value] of Object.entries(ret)) {
                 if (value > maxEmo) {
                     nameMaxEmo = key;
