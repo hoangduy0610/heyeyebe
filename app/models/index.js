@@ -7,6 +7,7 @@ db.mongoose = mongoose;
 db.user = require("./user.model");
 db.role = require("./role.model");
 db.emotion = require("./emotion.model");
+db.track = require("./track.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 

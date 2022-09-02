@@ -20,4 +20,5 @@ module.exports = function (app, express, config) {
     require('./routes/auth.routes')(app);
     require('./routes/user.routes')(app);
     require('./routes/emotion.routes')(app);
+    require('./routes/track.routes')(app);
 }
