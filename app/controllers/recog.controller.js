@@ -1,7 +1,10 @@
 const faceapi = require('face-api.js');
 const fs = require('fs');
+const path = require('path');
+const fse = require('fs-extra');
 const { canvas, faceDetectionNet, faceDetectionOptions, saveFile } = require('../commons');
-
+const uploadPath = path.join(__dirname, '../../uploads/');
+fse.ensureDir(uploadPath);
 exports.recog = async (req, res, next) => {
     await faceDetectionNet.loadFromDisk('app/ML_Models/weights')
     await faceapi.nets.faceLandmark68Net.loadFromDisk('app/ML_Models/weights')
@@ -22,24 +25,42 @@ exports.recog = async (req, res, next) => {
         }
     }
     const faceMatcher = await createFaceMatcher(content);
-    const img = await canvas.loadImage('temp/test_images/19300059.jpg')
-    const results = await faceapi.detectAllFaces(img, faceDetectionOptions)
-        .withFaceLandmarks()
-        .withFaceExpressions()
-        .withFaceDescriptors()
 
-    const results2 = results.map(d => faceMatcher.findBestMatch(d.descriptor));
+    req.pipe(req.busboy);
 
-    const out = faceapi.createCanvasFromMedia(img);
-    faceapi.draw.drawDetections(out, results.map(dd => dd.detection))
-    faceapi.draw.drawFaceExpressions(out, results)
+    req.busboy.on('file', (fieldname, file, info) => {
+        console.log(`Upload of '${info.filename}' started`);
 
-    const ret = results.map(ddd => ddd.expressions);
-    ret.map((re, ri) => Object.keys(re).forEach(function (key, index) {
-        re[key] = Math.floor((re[key] + Number.EPSILON) * 1000) / 1000;
-        re.name = results2[ri].label;
-    }));
-    await res.send(ret)
+        const fstream = fse.createWriteStream(path.join(uploadPath, info.filename));
+        file.pipe(fstream);
+
+        fstream.on('close', async () => {
+            console.log(`Upload of '${info.filename}' finished`);
+            const img = await canvas.loadImage(path.join(uploadPath, info.filename));
+            const results = await faceapi.detectAllFaces(img, faceDetectionOptions)
+                .withFaceLandmarks()
+                .withFaceExpressions()
+                .withFaceDescriptors()
+
+            const results2 = results.map(d => faceMatcher.findBestMatch(d.descriptor));
+
+            const out = faceapi.createCanvasFromMedia(img);
+            faceapi.draw.drawDetections(out, results.map(dd => dd.detection))
+            faceapi.draw.drawFaceExpressions(out, results)
+
+            const ret = results.map(ddd => ddd.expressions);
+            ret.map((re, ri) => Object.keys(re).forEach(async function (key, index) {
+                re[key] = Math.floor((re[key] + Number.EPSILON) * 1000) / 1000;
+                re.name = results2[ri].label;
+                const name_path = info.filename.split(".")
+                const tp = new Date();
+                const dt = tp.getFullYear() + "-" + tp.getMonth() + "-" + tp.getDate() + " " + tp.getHours() + "-" + tp.getMinutes() + "-" + tp.getSeconds();
+                await fse.move(path.join(uploadPath, info.filename), path.join(uploadPath, re.name + "_" + dt + "." + name_path[name_path.length - 1])).catch((e) => { });
+            }));
+            await res.send(ret)
+        });
+    });
+
     // saveFile('faceExpressionRecognition.jpg', out.toBuffer('image/jpeg'))
     // console.log('done, saved results to out/faceExpressionRecognition.jpg')
 }
@@ -104,9 +125,13 @@ function loadLabeledImages(labels) {
             const descriptions = []
             const files_train = await getFiles(`app/ML_Models/datasets/${label}`);
             for (let i = 0; i < files_train.length; i++) {
-                console.log(`app/ML_Models/datasets/${label}/${files_train[i]}`);
                 const img = await canvas.loadImage(`app/ML_Models/datasets/${label}/${files_train[i]}`);
-                const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
+                const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+                if (!detections) {
+                    fs.unlinkSync(`app/ML_Models/datasets/${label}/${files_train[i]}`);
+                    console.log(`Train Failed app/ML_Models/datasets/${label}/${files_train[i]}`);
+                    continue;
+                }
                 descriptions.push(detections?.descriptor || new Float32Array([]))
             }
 
