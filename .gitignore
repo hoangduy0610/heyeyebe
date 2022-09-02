@@ -1,3 +1,5 @@
 node_modules/
 uploads/
 temp/
+app/ML_Models/datasets/*
+app/ML_Models/output/*

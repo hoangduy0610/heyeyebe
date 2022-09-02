@@ -10,7 +10,7 @@ module.exports = function (app, express, config) {
     app.use(busboy({
         highWaterMark: 2 * 1024 * 1024, // 2MiB buffer
     }));
-    
+
     app.get("/", (req, res) => {
         res.json({ message: "Powered by ExpressJS." });
     });
@@ -21,4 +21,5 @@ module.exports = function (app, express, config) {
     require('./routes/user.routes')(app);
     require('./routes/emotion.routes')(app);
     require('./routes/track.routes')(app);
+    require('./routes/recog.routes')(app);
 }
